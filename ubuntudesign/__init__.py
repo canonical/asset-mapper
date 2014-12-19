@@ -38,25 +38,31 @@ class AssetMapper:
 
         return self._format_assets(api_response.json())
 
-    def create(self, asset_content, filename, tags):
-        api_response = self._request(
-            'post',
-            self.server_url,
-            data={
-                'asset': b64encode(asset_content),
-                'filename': filename,
-                'tags': tags,
-                'type': 'base64'
-            },
-            allowed_errors=[409]
-        )
+    def create(self, asset_content, friendly_name, tags=''):
+        """
+        Create an asset on the server
+        You must provide the asset with a friendly name
+        for the server to generate a path from.
+        """
 
-        response = api_response.json()
+        return self._create_asset({
+            'asset': b64encode(asset_content),
+            'friendly-name': friendly_name,
+            'tags': tags,
+            'type': 'base64'
+        })
 
-        if api_response.status_code < 300:
-            response = self._format_asset(response)
+    def create_at_path(self, asset_content, url_path, tags=''):
+        """
+        Create asset at a specific URL path on the server
+        """
 
-        return response
+        return self._create_asset({
+            'asset': b64encode(asset_content),
+            'url-path': url_path,
+            'tags': tags,
+            'type': 'base64'
+        })
 
     def update(self, filename, tags):
         asset_url = urljoin(self.server_url, filename)
@@ -70,6 +76,21 @@ class AssetMapper:
         )
 
         return self._format_asset(api_response.json())
+
+    def _create_asset(self, asset_data):
+        api_response = self._request(
+            'post',
+            self.server_url,
+            data=asset_data,
+            allowed_errors=[409]
+        )
+
+        response = api_response.json()
+
+        if api_response.status_code < 300:
+            response = self._format_asset(response)
+
+        return response
 
     def _format_assets(self, data):
         formatted_data = []
