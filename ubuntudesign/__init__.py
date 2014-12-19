@@ -20,8 +20,8 @@ class AssetMapper:
         self.server_url = server_url
         self.auth_token = auth_token
 
-    def get(self, filename):
-        asset_data_url = urljoin(self.server_url, '{0}.json'.format(filename))
+    def get(self, file_path):
+        asset_data_url = urljoin(self.server_url, '{0}.json'.format(file_path))
 
         api_response = self._request('get', asset_data_url)
 
@@ -64,8 +64,8 @@ class AssetMapper:
             'type': 'base64'
         })
 
-    def update(self, filename, tags):
-        asset_url = urljoin(self.server_url, filename)
+    def update(self, file_path, tags):
+        asset_url = urljoin(self.server_url, file_path)
 
         api_response = self._request(
             'put',
@@ -101,12 +101,12 @@ class AssetMapper:
         return formatted_data
 
     def _format_asset(self, datum):
-        mimetype = mimetypes.guess_type(datum["filename"])[0]
+        mimetype = mimetypes.guess_type(datum["file_path"])[0]
 
         return {
-            "filename": datum["filename"],
+            "file_path": datum["file_path"],
             "tags": datum["tags"],
-            "url": urljoin(self.server_url, datum["filename"]),
+            "url": urljoin(self.server_url, datum["file_path"]),
             "image": mimetype in self.image_types,
             "created": datum["created"]
         }
