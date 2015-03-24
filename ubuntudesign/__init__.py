@@ -38,7 +38,7 @@ class AssetMapper:
 
         return self._format_assets(api_response.json())
 
-    def create(self, asset_content, friendly_name, tags=''):
+    def create(self, asset_content, friendly_name, tags='', optimize=False):
         """
         Create an asset on the server
         You must provide the asset with a friendly name
@@ -49,6 +49,7 @@ class AssetMapper:
             'asset': b64encode(asset_content),
             'friendly-name': friendly_name,
             'tags': tags,
+            'optimize': optimize,
             'type': 'base64'
         })
 
