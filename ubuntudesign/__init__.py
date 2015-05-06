@@ -21,7 +21,7 @@ class AssetMapper:
         self.auth_token = auth_token
 
     def get(self, file_path):
-        asset_data_url = urljoin(self.server_url, '{0}.json'.format(file_path))
+        asset_data_url = urljoin(self.server_url, '{0}/info'.format(file_path))
 
         api_response = self._request('get', asset_data_url)
 
