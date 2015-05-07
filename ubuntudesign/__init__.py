@@ -1,10 +1,25 @@
 # System
 import mimetypes
 from base64 import b64encode
-from urlparse import urljoin
+import urllib
+import urlparse
 
 # Modules
 import requests
+
+
+def add_query_params(url, params):
+    """
+    Add query params to a URL
+    """
+
+    url_parts = list(urlparse.urlparse(url))
+    query = dict(urlparse.parse_qsl(url_parts[4]))
+    query.update(params)
+
+    url_parts[4] = urllib.urlencode(query)
+
+    print urlparse.urlunparse(url_parts)
 
 
 class AssetMapper:
@@ -21,7 +36,10 @@ class AssetMapper:
         self.auth_token = auth_token
 
     def get(self, file_path):
-        asset_data_url = urljoin(self.server_url, '{0}/info'.format(file_path))
+        asset_data_url = urlparse.urljoin(
+            self.server_url,
+            '{0}/info'.format(file_path)
+        )
 
         api_response = self._request('get', asset_data_url)
 
@@ -66,7 +84,7 @@ class AssetMapper:
         })
 
     def update(self, file_path, tags):
-        asset_url = urljoin(self.server_url, file_path)
+        asset_url = urlparse.urljoin(self.server_url, file_path)
 
         api_response = self._request(
             'put',
@@ -107,17 +125,21 @@ class AssetMapper:
         return {
             "file_path": datum["file_path"],
             "tags": datum["tags"],
-            "url": urljoin(self.server_url, datum["file_path"]),
+            "url": urlparse.urljoin(self.server_url, datum["file_path"]),
             "image": mimetype in self.image_types,
             "created": datum["created"]
         }
 
     def _request(
         self, method, url,
-        data=None, headers={}, allowed_errors=[]
+        data=None, headers={}, allowed_errors=[],
+        authorize_by_header=False
     ):
         if self.auth_token:
-            headers['Authorization'] = 'token {0}'.format(self.auth_token)
+            if authorize_by_header:
+                headers['Authorization'] = 'token {0}'.format(self.auth_token)
+            else:
+                add_query_params(url, {'token': self.auth_token})
 
         response = requests.request(
             method=method,
