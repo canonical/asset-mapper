@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='ubuntudesign-asset-mapper',
-    version='0.5',
+    version='0.6',
     author='Robin',
     author_email='robin.winslow@canonical.com',
     url='https://github.com/ubuntudesign/asset-mapper',
