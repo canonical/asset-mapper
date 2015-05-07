@@ -19,7 +19,7 @@ def add_query_params(url, params):
 
     url_parts[4] = urllib.urlencode(query)
 
-    print urlparse.urlunparse(url_parts)
+    return urlparse.urlunparse(url_parts)
 
 
 class AssetMapper:
@@ -139,7 +139,7 @@ class AssetMapper:
             if authorize_by_header:
                 headers['Authorization'] = 'token {0}'.format(self.auth_token)
             else:
-                add_query_params(url, {'token': self.auth_token})
+                url = add_query_params(url, {'token': self.auth_token})
 
         response = requests.request(
             method=method,
