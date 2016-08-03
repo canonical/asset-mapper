@@ -55,7 +55,7 @@ class AssetMapper:
             for param_name, param_value in query_parameters.iteritems():
                 query_strings.append('{}={}'.format(param_name, param_value))
 
-            url += '?{}'.format(query_strings.join('&'))
+            url += '?{}'.format('&'.join(query_strings))
 
         api_response = self._request('get', url)
 

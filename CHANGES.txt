@@ -1,1 +1,4 @@
 v0.1, 2014-12-19 -- Initial release.
+v0.8, 2014-08-03 -- More flexible parameters for "all" searching.
+v0.9, 2014-08-03 -- Fix error with joining parameters.
+v0.10, 2014-08-03 -- Fix string joining properly this time.
