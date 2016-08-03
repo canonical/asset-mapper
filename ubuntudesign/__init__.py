@@ -53,9 +53,6 @@ class AssetMapper:
             url += '?'
             for param_name, param_value in query_parameters.iteritems():
                 url += '{}={}'.format(param_name, param_value)
-            
-        if type:
-            url += '&type{0}'.format(type)
 
         api_response = self._request('get', url)
 
