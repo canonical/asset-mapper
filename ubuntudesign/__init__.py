@@ -45,12 +45,17 @@ class AssetMapper:
 
         return self._format_asset(api_response.json())
 
-    def all(self, search=''):
+    def all(self, query_parameters={}):
         url = self.server_url
 
         # Search, if requested
-        if search:
-            url += '?q={0}'.format(search)
+        if query_parameters:
+            query_strings = []
+
+            for param_name, param_value in query_parameters.iteritems():
+                query_strings.append('{}={}'.format(param_name, param_value))
+
+            url += '?{}'.format(query_strings.join('&'))
 
         api_response = self._request('get', url)
 
