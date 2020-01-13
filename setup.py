@@ -12,7 +12,8 @@ setup(
     description=(
         'A mapping class for using the Ubuntu asset server.'
     ),
-    long_description=open('README.rst').read(),
+    long_description=open('README.md').read(),
+    long_description_content_type="text/markdown",
     install_requires=[
         "requests >= 2.0"
     ]
