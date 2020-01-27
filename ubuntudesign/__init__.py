@@ -37,11 +37,10 @@ class AssetMapper:
 
     def get(self, file_path):
         asset_data_url = urlparse.urljoin(
-            self.server_url,
-            '{0}/info'.format(file_path)
+            self.server_url, "{0}/info".format(file_path)
         )
 
-        api_response = self._request('get', asset_data_url)
+        api_response = self._request("get", asset_data_url)
 
         return self._format_asset(api_response.json())
 
@@ -53,60 +52,55 @@ class AssetMapper:
             query_strings = []
 
             for param_name, param_value in query_parameters.iteritems():
-                query_strings.append('{}={}'.format(param_name, param_value))
+                query_strings.append("{}={}".format(param_name, param_value))
 
-            url += '?{}'.format('&'.join(query_strings))
+            url += "?{}".format("&".join(query_strings))
 
-        api_response = self._request('get', url)
+        api_response = self._request("get", url)
 
         return self._format_assets(api_response.json())
 
-    def create(self, asset_content, friendly_name, tags='', optimize=False):
+    def create(self, asset_content, friendly_name, tags="", optimize=False):
         """
         Create an asset on the server
         You must provide the asset with a friendly name
         for the server to generate a path from.
         """
 
-        return self._create_asset({
-            'asset': b64encode(asset_content),
-            'friendly-name': friendly_name,
-            'tags': tags,
-            'optimize': optimize,
-            'type': 'base64'
-        })
+        return self._create_asset(
+            {
+                "asset": b64encode(asset_content),
+                "friendly-name": friendly_name,
+                "tags": tags,
+                "optimize": optimize,
+                "type": "base64",
+            }
+        )
 
-    def create_at_path(self, asset_content, url_path, tags=''):
+    def create_at_path(self, asset_content, url_path, tags=""):
         """
         Create asset at a specific URL path on the server
         """
 
-        return self._create_asset({
-            'asset': b64encode(asset_content),
-            'url-path': url_path,
-            'tags': tags,
-            'type': 'base64'
-        })
+        return self._create_asset(
+            {
+                "asset": b64encode(asset_content),
+                "url-path": url_path,
+                "tags": tags,
+                "type": "base64",
+            }
+        )
 
     def update(self, file_path, tags):
         asset_url = urlparse.urljoin(self.server_url, file_path)
 
-        api_response = self._request(
-            'put',
-            asset_url,
-            data={
-                'tags': tags
-            }
-        )
+        api_response = self._request("put", asset_url, data={"tags": tags})
 
         return self._format_asset(api_response.json())
 
     def _create_asset(self, asset_data):
         api_response = self._request(
-            'post',
-            self.server_url,
-            data=asset_data,
-            allowed_errors=[409]
+            "post", self.server_url, data=asset_data, allowed_errors=[409]
         )
 
         response = api_response.json()
@@ -132,25 +126,26 @@ class AssetMapper:
             "tags": datum["tags"],
             "url": urlparse.urljoin(self.server_url, datum["file_path"]),
             "image": mimetype in self.image_types,
-            "created": datum["created"]
+            "created": datum["created"],
         }
 
     def _request(
-        self, method, url,
-        data=None, headers={}, allowed_errors=[],
-        authorize_by_header=False
+        self,
+        method,
+        url,
+        data=None,
+        headers={},
+        allowed_errors=[],
+        authorize_by_header=False,
     ):
         if self.auth_token:
             if authorize_by_header:
-                headers['Authorization'] = 'token {0}'.format(self.auth_token)
+                headers["Authorization"] = "token {0}".format(self.auth_token)
             else:
-                url = add_query_params(url, {'token': self.auth_token})
+                url = add_query_params(url, {"token": self.auth_token})
 
         response = requests.request(
-            method=method,
-            url=url,
-            data=data,
-            headers=headers
+            method=method, url=url, data=data, headers=headers
         )
 
         # Throw an error if we have a bad status
